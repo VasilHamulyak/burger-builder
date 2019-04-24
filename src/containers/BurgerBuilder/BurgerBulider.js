@@ -9,7 +9,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import axios from '../../axios-orders';
 import withErrorHandler from '../../hoc/withErrorHandler/withErroHandler';
-import { addIngredients, removeIngredients } from '../../store/actions/index';
+import { addIngredients, removeIngredients, initIngredients } from '../../store/actions/index';
 
 class BurgerBuilder extends Component {
     state = {
@@ -17,6 +17,10 @@ class BurgerBuilder extends Component {
         purchasing: false,
         loading: false,
         error: false
+    }
+
+    componentDidMount() {
+        this.props.onInitIngredeints();
     }
 
     updatePurchaseState(ingredients) {
@@ -48,7 +52,7 @@ class BurgerBuilder extends Component {
             disableInfo[key] = disableInfo[key] <= 0;
         }
         let orderSummary = null;
-        let burger = this.state.error ? <p>Ingredients can't be loaded!</p> : <Spinner />;
+        let burger = this.props.error ? <p>Ingredients can't be loaded!</p> : <Spinner />;
 
         if (this.props.ings) {
             burger = (
@@ -70,9 +74,6 @@ class BurgerBuilder extends Component {
                 ingredients={this.props.ings}
                 totalPrice={this.props.price}/>;
         }
-        if (this.state.loading) {
-            orderSummary = <Spinner />;
-        }
         return (
             <Aux>
                 <Modal show={this.state.purchasing} closedModal={this.purchaseCancelHandler}>
@@ -87,14 +88,16 @@ class BurgerBuilder extends Component {
 const mapStateToProps = state => {
     return {
         ings: state.ingredients,
-        price: state.totalPrice
+        price: state.totalPrice,
+        error: state.error
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         onIngredeintAdded: (ingName) => dispatch(addIngredients(ingName)),
-        onIngredeintRemove: (ingName) => dispatch(removeIngredients(ingName))
+        onIngredeintRemove: (ingName) => dispatch(removeIngredients(ingName)),
+        onInitIngredeints: () => dispatch(initIngredients())
     }
 };
 
