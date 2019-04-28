@@ -91,7 +91,7 @@ const mapStateToProps = state => {
         ings: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.totalPrice,
         error: state.burgerBuilder.error
-    }
+    };
 };
 
 const mapDispatchToProps = dispatch => {
@@ -100,7 +100,7 @@ const mapDispatchToProps = dispatch => {
         onIngredeintRemove: (ingName) => dispatch(removeIngredients(ingName)),
         onInitIngredeints: () => dispatch(initIngredients()),
         onInitPurchase: () => dispatch(purchaseInit())
-    }
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));

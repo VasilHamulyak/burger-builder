@@ -85,6 +85,6 @@ export const fetchOrders = () => {
         })
         .catch(err => {
             dispatch(fetchOrdersFail(err));
-        })
+        });
     };
 };
