@@ -134,14 +134,14 @@ class Auth extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         loading: state.auth.loading,
         error: state.auth.error
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
     return {
         onAuth: (email, password, isSignup) => dispatch(auth(email, password, isSignup))
     };
