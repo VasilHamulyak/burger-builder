@@ -2,7 +2,8 @@ import {
     AUTH_START,
     AUTH_SUCCESS,
     AUTH_FAIL,
-    AUTH_LOGOUT
+    AUTH_LOGOUT,
+    AUTH_REDIRECT_PATH
 } from './actionTypes';
 import axios from 'axios';
 
@@ -61,5 +62,12 @@ export const auth = (email, password, isSignup) => {
             .catch(error => {
                 dispatch(authFail(error.response.data.error.message));
             });
+    };
+};
+
+export const authRedirectPath = path => {
+    return {
+        type: AUTH_REDIRECT_PATH,
+        path: path
     };
 };
