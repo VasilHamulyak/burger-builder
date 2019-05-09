@@ -4,7 +4,8 @@ import { updateObject } from '../utility';
 const initialState = {
     ingredients: null,
     totalPrice: 4,
-    error: false
+    error: false,
+    building: false
 };
 
 const INGREDIENT_PRICES = {
@@ -19,7 +20,8 @@ const addIngredient = (state, action) => {
     const updateIngrerients = updateObject(state.ingredients, addIngredient);
     const updatedState = {
         ingredients: updateIngrerients,
-        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName]
+        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+        building: true
     };
     return updateObject(state, updatedState);
 };
@@ -29,7 +31,8 @@ const removeIngredient = (state, action) => {
     const updateIngrerients = updateObject(state.ingredients, removeIngredient);
     const updatedState = {
         ingredients: updateIngrerients,
-        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName]
+        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+        building: true
     };
     return updateObject(state, updatedState);
 };
@@ -37,11 +40,12 @@ const removeIngredient = (state, action) => {
 const setIngredients = (state, action) => {
     return updateObject(state, {
         ingredients: action.ingredients,
-        totalPrice: 4
+        totalPrice: 4,
+        building: false
     });
 };
 
-const fetchIngredientsFail = (state, action) => {
+const fetchIngredientsFail = state => {
     return updateObject(state, { error: true});
 };
 
@@ -50,7 +54,7 @@ const reducer = (state = initialState, action) => {
         case actionTypes.ADD_INGREDIENTS: return addIngredient(state, action);
         case actionTypes.REMOVE_INGREDIENTS: return removeIngredient(state, action);
         case actionTypes.SET_INGREDIENTS: return setIngredients(state, action);
-        case actionTypes.FETCH_INGREDIENTS_FAILED: return fetchIngredientsFail(state,action);
+        case actionTypes.FETCH_INGREDIENTS_FAILED: return fetchIngredientsFail(state);
         default: return state;
     }
 };
