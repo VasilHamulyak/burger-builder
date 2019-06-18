@@ -3,7 +3,9 @@ import {
     AUTH_SUCCESS,
     AUTH_FAIL,
     AUTH_INITIATE_LOGOUT,
-    AUTH_REDIRECT_PATH
+    AUTH_LOGOUT,
+    AUTH_REDIRECT_PATH,
+    AUTH_CHECK_TIMEOUT
 } from './actionTypes';
 import axios from 'axios';
 
@@ -34,13 +36,18 @@ export const authLogout = () => {
     };
 };
 
-export const checkAuthTime = expiredTime => {
-    return dispatch => {
-        setTimeout(() => {
-            dispatch(authLogout());
-        }, expiredTime * 1000);
-    }
-}
+export const authLogoutSucceed = () => {
+    return {
+        type: AUTH_LOGOUT
+    };
+};
+
+export const checkAuthTimeout = expiredTime => {
+    return {
+        type: AUTH_CHECK_TIMEOUT,
+        expiredTime: expiredTime
+    };
+};
 
 export const auth = (email, password, isSignup) => {
     return dispatch => {
@@ -61,7 +68,7 @@ export const auth = (email, password, isSignup) => {
                 localStorage.setItem('expirationDate', expirationDate);
                 localStorage.setItem('userId', response.data.localId);
                 dispatch(authSuccess(response.data.idToken, response.data.localId));
-                dispatch(checkAuthTime(response.data.expiresIn))
+                dispatch(checkAuthTimeout(response.data.expiresIn))
             })
             .catch(error => {
                 dispatch(authFail(error.response.data.error.message));
@@ -86,7 +93,7 @@ export const authCheckState = () => {
             if (expirationDate > new Date()) {
                 const userId = localStorage.getItem('userId');
                 dispatch(authSuccess(token, userId));
-                dispatch(checkAuthTime((expirationDate.getTime() - new Date().getTime()) / 1000));
+                dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000));
             } else {
                 dispatch(authLogout());
             }
