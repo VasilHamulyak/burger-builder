@@ -5,7 +5,8 @@ import {
     AUTH_INITIATE_LOGOUT,
     AUTH_LOGOUT,
     AUTH_REDIRECT_PATH,
-    AUTH_CHECK_TIMEOUT
+    AUTH_CHECK_TIMEOUT,
+    AUTH_USER
 } from './actionTypes';
 import axios from 'axios';
 
@@ -50,29 +51,11 @@ export const checkAuthTimeout = expiredTime => {
 };
 
 export const auth = (email, password, isSignup) => {
-    return dispatch => {
-        dispatch(authStart());
-        const authData = {
-            email: email,
-            password: password,
-            returnSecureToken: true
-        }
-        let signAction = 'signupNewUser';
-        if (isSignup) {
-            signAction = 'verifyPassword';
-        }
-        axios.post(`https://www.googleapis.com/identitytoolkit/v3/relyingparty/${ signAction }?key=AIzaSyBbNuLZm26n11vomh192Bke20L2g__FlvM`, authData)
-            .then(response => {
-                const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
-                localStorage.setItem('token', response.data.idToken);
-                localStorage.setItem('expirationDate', expirationDate);
-                localStorage.setItem('userId', response.data.localId);
-                dispatch(authSuccess(response.data.idToken, response.data.localId));
-                dispatch(checkAuthTimeout(response.data.expiresIn))
-            })
-            .catch(error => {
-                dispatch(authFail(error.response.data.error.message));
-            });
+    return {
+        type: AUTH_USER,
+        email: email,
+        password: password,
+        isSignup: isSignup
     };
 };
 
