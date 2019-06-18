@@ -6,9 +6,9 @@ import {
     AUTH_LOGOUT,
     AUTH_REDIRECT_PATH,
     AUTH_CHECK_TIMEOUT,
-    AUTH_USER
+    AUTH_USER,
+    AUTH_CHECK_STATE
 } from './actionTypes';
-import axios from 'axios';
 
 export const authStart = () => {
     return {
@@ -67,19 +67,7 @@ export const authRedirectPath = path => {
 };
 
 export const authCheckState = () => {
-    return dispatch => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            dispatch(authLogout());
-        } else {
-            const expirationDate = new Date(localStorage.getItem('expirationDate'));
-            if (expirationDate > new Date()) {
-                const userId = localStorage.getItem('userId');
-                dispatch(authSuccess(token, userId));
-                dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000));
-            } else {
-                dispatch(authLogout());
-            }
-        }
+    return {
+        type: AUTH_CHECK_STATE
     };
 };
