@@ -7,11 +7,11 @@ import ContactData from '../Checkout/ContactData/ContactData';
 
 const checkout = props => {
     const checkoutCancelledHandler = () => {
-        this.props.history.goBack();
+        props.history.goBack();
     }
     
     const checkoutContinuedHandler = () => {
-        this.props.history.replace('/checkout/contact-data');
+        props.history.replace('/checkout/contact-data');
     }
 
     let summary = <Redirect to='/'/>
