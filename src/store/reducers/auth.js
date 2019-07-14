@@ -23,7 +23,8 @@ const authSuccess = (state, action) => {
     return updateObject(state, {
         token: action.idToken,
         userId: action.userId,
-        loading: false
+        loading: false,
+        error: null
     });
 };
 

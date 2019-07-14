@@ -30,24 +30,25 @@ export function* authUserSaga(action) {
         password: action.password,
         returnSecureToken: true
     }
-        let signAction = 'signupNewUser';
-        if (action.isSignup) {
-            signAction = 'verifyPassword';
-        }
+    let signAction = 'signupNewUser';
+    if (action.isSignup) {
+        signAction = 'verifyPassword';
+    }
+
+    try {
         const response = yield axios.post(
             `https://www.googleapis.com/identitytoolkit/v3/relyingparty/${ signAction }?key=AIzaSyBbNuLZm26n11vomh192Bke20L2g__FlvM`,
             authData
         );
-        try {
-            const expirationDate = yield new Date(new Date().getTime() + response.data.expiresIn * 1000);
-            yield call([localStorage, 'setItem'], 'token', response.data.idToken);
-            yield call([localStorage, 'setItem'], 'expirationDate', expirationDate);
-            yield call([localStorage, 'setItem'], 'userId', response.data.localId);
-            yield put(authSuccess(response.data.idToken, response.data.localId));
-            yield put(checkAuthTimeout(response.data.expiresIn))
-        } catch (error) {
-            yield put(authFail(error.response.data.error.message));
-        }
+        const expirationDate = yield new Date(new Date().getTime() + response.data.expiresIn * 1000);
+        yield call([localStorage, 'setItem'], 'token', response.data.idToken);
+        yield call([localStorage, 'setItem'], 'expirationDate', expirationDate);
+        yield call([localStorage, 'setItem'], 'userId', response.data.localId);
+        yield put(authSuccess(response.data.idToken, response.data.localId));
+        yield put(checkAuthTimeout(response.data.expiresIn))
+    } catch (error) {
+        yield put(authFail(error.response.data.error.message));
+    }
 };
 
 export function* authCheckStateSaga() {
